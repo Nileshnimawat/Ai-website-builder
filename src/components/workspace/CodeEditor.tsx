@@ -15,14 +15,16 @@ import { sandpackDark } from "@codesandbox/sandpack-themes";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useParams } from "next/navigation";
-import {
-  getWorkspaceFiles,
-  saveWorkspaceFiles,
-} from "@/server/actions/user.action";
+// import {
+//   getWorkspaceFiles,
+//   saveWorkspaceFiles,
+// } from "@/server/actions/user.action";
+
+export type FileMap = Record<string, { code: string }>;
 
 interface AIResponse {
   output: {
-    files: Record<string, { code: string }>;
+    files: FileMap;
   };
 }
 
@@ -31,39 +33,47 @@ const CodeEditor = () => {
   const workspaceId = params?.id as string;
 
   const prompt = useSelector((state: RootState) => state.chat.prompt);
-  const [files, setFiles] = useState(lookup.DEFAULT_FILE);
+  const [files, setFiles] = useState<FileMap>(lookup.DEFAULT_FILE);
   const [key, setKey] = useState(Date.now());
   const [loading, setLoading] = useState(false);
 
-
   // Load files from workspace
-  useEffect(() => {
-    const loadFiles = async () => {
-      try {
-        if (!workspaceId) return;
-        
-        const dbFiles = await getWorkspaceFiles(workspaceId);
-        if (dbFiles && typeof dbFiles === "object" && !Array.isArray(dbFiles)) {
-          setFiles({ ...lookup.DEFAULT_FILE, ...dbFiles });
-          setKey(Date.now());
-        }
-      } catch (err) {
-        console.error("Error loading files:", err);
-      
-      }
-    };
-    
-    loadFiles();
-  }, [workspaceId]);
+  // useEffect(() => {
+  //   const loadFiles = async () => {
+  //     try {
+  //       if (!workspaceId) return;
 
+  //       const dbFiles = await getWorkspaceFiles(workspaceId);
+  //       if (dbFiles && typeof dbFiles === "object" && !Array.isArray(dbFiles)) {
+  //         const cleaned: FileMap = {};
+  //         for (const [key, value] of Object.entries(dbFiles)) {
+  //           if (
+  //             value &&
+  //             typeof value === "object" &&
+  //             "code" in value &&
+  //             typeof (value as any).code === "string"
+  //           ) {
+  //             cleaned[key] = { code: (value as any).code };
+  //           }
+  //         }
+  //         setFiles({ ...lookup.DEFAULT_FILE, ...cleaned });
+  //         setKey(Date.now());
+  //       }
+  //     } catch (err) {
+  //       console.error("Error loading files:", err);
+  //     }
+  //   };
+
+  //   loadFiles();
+  // }, [workspaceId]);
 
   useEffect(() => {
     const fetchCode = async () => {
       if (!prompt?.trim()) return;
-      
+
       try {
         setLoading(true);
-     
+
         const res = await fetch("/api/codes", {
           method: "POST",
           body: JSON.stringify({ prompt }),
@@ -77,7 +87,7 @@ const CodeEditor = () => {
         }
 
         const data: AIResponse = await res.json();
-        
+
         if (!data.output?.files) {
           throw new Error("Invalid response format");
         }
@@ -86,13 +96,11 @@ const CodeEditor = () => {
         setFiles(merged);
         setKey(Date.now());
 
-        // Save to workspace if workspaceId exists
-        if (workspaceId) {
-          await saveWorkspaceFiles(workspaceId, merged);
-        }
+        // if (workspaceId) {
+        //   await saveWorkspaceFiles(workspaceId, merged);
+        // }
       } catch (err) {
         console.error("Error generating/saving code:", err);
-      
       } finally {
         setLoading(false);
       }
@@ -102,7 +110,6 @@ const CodeEditor = () => {
   }, [prompt, workspaceId]);
 
   if (loading) return <LoadingSpinner />;
-
 
   return (
     <div className="w-full h-full bg-[#111313] flex flex-col overflow-hidden">
@@ -118,44 +125,40 @@ const CodeEditor = () => {
           ],
         }}
       >
-        <div className="flex flex-col h-full ">
-          {/* Header with tabs */}
-          <div className="flex-shrink-0  border-b border-white/10">
+        <div className="flex flex-col h-full">
+          <div className="flex-shrink-0 border-b border-white/10">
             <Tabs defaultValue="code" className="w-full">
               <TabsList className="grid w-50 grid-cols-2 bg-[#2a2a2a] border border-white/10">
                 <TabsTrigger
                   value="code"
-                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 transition-all duration-200  flex items-center gap-2 "
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 transition-all duration-200 flex items-center gap-2"
                 >
-                 
                   Code Editor
                 </TabsTrigger>
                 <TabsTrigger
                   value="preview"
-                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 transition-all duration-200 flex items-center gap-2 "
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 transition-all duration-200 flex items-center gap-2"
                 >
-                           Preview
+                  Preview
                 </TabsTrigger>
-                
               </TabsList>
 
-              {/* Content area */}
-              <div className=" h-[calc(100vh-120px)]">
+              <div className="h-[calc(100vh-120px)]">
                 <TabsContent value="code" className="h-full m-0 data-[state=active]:block">
                   <SandpackLayout className="h-full w-full">
                     <SandpackFileExplorer
-                      style={{ 
+                      style={{
                         height: "100%",
                         minWidth: "200px",
-                        maxWidth: "300px"
+                        maxWidth: "300px",
                       }}
                       className="border-r border-white/10 bg-[#1a1a1a] overflow-y-auto"
                     />
                     <SandpackCodeEditor
-                      style={{ 
+                      style={{
                         height: "100%",
-                        maxWidth:"800px",
-                        flex: 1
+                        maxWidth: "800px",
+                        flex: 1,
                       }}
                       className="bg-[#1e1e1e] overflow-y-auto overflow-x-auto"
                       extensions={[autocompletion()]}
@@ -170,9 +173,9 @@ const CodeEditor = () => {
                 <TabsContent value="preview" className="h-full m-0 data-[state=active]:block">
                   <SandpackLayout className="h-full w-full">
                     <SandpackPreview
-                      style={{ 
+                      style={{
                         height: "100%",
-                        width: "100%"
+                        width: "100%",
                       }}
                       showNavigator
                       showRefreshButton
@@ -212,5 +215,3 @@ const LoadingSpinner = () => (
     </div>
   </div>
 );
-
-

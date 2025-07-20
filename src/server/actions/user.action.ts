@@ -116,30 +116,33 @@ export async function getUserWorkspaces() {
   return workspaces;
 }
 
-export async function getWorkspaceFiles(workspaceId: string) {
-  try {
-    const workspace = await prisma.workspace.findUnique({
-      where: { id: workspaceId },
-      select: { files: true },
-    });
+// export async function getWorkspaceFiles(workspaceId: string) {
+//   try {
+//     const workspace = await prisma.workspace.findUnique({
+//       where: { id: workspaceId },
+//       select: { files: true },
+//     });
 
-    return workspace?.files || null;
-  } catch (err) {
-    console.error("Failed to fetch files:", err);
-    return null;
-  }
-}
+//     return workspace?.files || null;
+//   } catch (err) {
+//     console.error("Failed to fetch files:", err);
+//     return null;
+//   }
+// }
 
-export async function saveWorkspaceFiles(workspaceId: string, files: object) {
-  try {
-    await prisma.workspace.update({
-      where: { id: workspaceId },
-      data: { files },
-    });
+// export async function saveWorkspaceFiles(
+//   workspaceId: string,
+//   files: Record<string, { code: string }>
+// ) {
+//   try {
+//     await prisma.workspace.update({
+//       where: { id: workspaceId },
+//       data: { files },
+//     });
 
-    return { success: true };
-  } catch (err) {
-    console.error("Failed to save files:", err);
-    return { error: true };
-  }
-}
+//     return { success: true };
+//   } catch (err) {
+//     console.error("Failed to save files:", err);
+//     return { error: true };
+//   }
+// }

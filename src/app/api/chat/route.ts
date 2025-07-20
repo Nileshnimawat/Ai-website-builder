@@ -28,26 +28,36 @@ import { generateText } from "ai";
 import { NextRequest, NextResponse } from "next/server";
 import { CHAT_PROMPT } from "@/lib/prompt";
 
+type RequestBody = {
+  prompt: string;
+};
+
 export async function POST(req: NextRequest) {
   try {
-    const { prompt }: any = await req.json(); 
+    const body: RequestBody = await req.json();
+    const { prompt } = body;
 
     const result = await generateText({
-      model: google("gemini-2.5-flash") ,
+      model: google("gemini-2.5-flash"),
       system: CHAT_PROMPT,
       prompt: `Summarize the following article in 3-5 sentences: ${prompt}`,
     });
 
     return NextResponse.json({ success: true, output: result.text });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error generating text:", error);
+
+    let message = "Internal Server Error";
+
+    if (error instanceof Error) {
+      message = error.message;
+    }
+
     return NextResponse.json(
-      { success: false, error: error.message || "Internal Server Error" },
+      { success: false, error: message },
       { status: 500 }
     );
   }
 }
-
-
 
 

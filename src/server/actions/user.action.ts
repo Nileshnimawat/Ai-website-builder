@@ -130,7 +130,7 @@ export async function getWorkspaceFiles(workspaceId: string) {
   }
 }
 
-export async function saveWorkspaceFiles(workspaceId: string, files: any) {
+export async function saveWorkspaceFiles(workspaceId: string, files: object) {
   try {
     await prisma.workspace.update({
       where: { id: workspaceId },

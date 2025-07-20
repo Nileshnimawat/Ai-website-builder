@@ -149,6 +149,10 @@ const config = {
         "fromEnvVar": null,
         "value": "windows",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "rhel-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -175,8 +179,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"mongodb\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id          String      @id @default(auto()) @map(\"_id\") @db.ObjectId\n  clerkId     String      @unique\n  phoneNumber Int?\n  email       String\n  name        String\n  createdAt   DateTime    @default(now())\n  workspaces  Workspace[]\n}\n\nmodel Workspace {\n  id        String    @id @default(auto()) @map(\"_id\") @db.ObjectId\n  title     String\n  createdAt DateTime  @default(now())\n  user      User      @relation(fields: [userId], references: [id])\n  userId    String    @db.ObjectId\n  messages  Message[]\n  files     Json?\n}\n\nmodel Message {\n  id          String    @id @default(auto()) @map(\"_id\") @db.ObjectId\n  role        String // \"user\" or \"assistant\"\n  content     String\n  createdAt   DateTime  @default(now())\n  workspace   Workspace @relation(fields: [workspaceId], references: [id])\n  workspaceId String    @db.ObjectId\n}\n",
-  "inlineSchemaHash": "8faab04a4e2226135f594e33a203690b2698df7798f8c0bc19de893694b59815",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"./generated\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"mongodb\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id          String      @id @default(auto()) @map(\"_id\") @db.ObjectId\n  clerkId     String      @unique\n  phoneNumber Int?\n  email       String\n  name        String\n  createdAt   DateTime    @default(now())\n  workspaces  Workspace[]\n}\n\nmodel Workspace {\n  id        String    @id @default(auto()) @map(\"_id\") @db.ObjectId\n  title     String\n  createdAt DateTime  @default(now())\n  user      User      @relation(fields: [userId], references: [id])\n  userId    String    @db.ObjectId\n  messages  Message[]\n  files     Json?\n}\n\nmodel Message {\n  id          String    @id @default(auto()) @map(\"_id\") @db.ObjectId\n  role        String // \"user\" or \"assistant\"\n  content     String\n  createdAt   DateTime  @default(now())\n  workspace   Workspace @relation(fields: [workspaceId], references: [id])\n  workspaceId String    @db.ObjectId\n}\n",
+  "inlineSchemaHash": "6e7bd751b2527482ab212deba4723acf55175eb2bb8833bd6640ebdab71b7021",
   "copyEngine": true
 }
 
@@ -217,6 +221,10 @@ Object.assign(exports, Prisma)
 // file annotations for bundling tools to include these files
 path.join(__dirname, "query_engine-windows.dll.node");
 path.join(process.cwd(), "prisma/generated/query_engine-windows.dll.node")
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-rhel-openssl-3.0.x.so.node");
+path.join(process.cwd(), "prisma/generated/libquery_engine-rhel-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "prisma/generated/schema.prisma")

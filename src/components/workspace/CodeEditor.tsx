@@ -34,7 +34,7 @@ const CodeEditor = () => {
   const [files, setFiles] = useState(lookup.DEFAULT_FILE);
   const [key, setKey] = useState(Date.now());
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
 
   // Load files from workspace
   useEffect(() => {
@@ -49,7 +49,7 @@ const CodeEditor = () => {
         }
       } catch (err) {
         console.error("Error loading files:", err);
-        setError("Failed to load workspace files");
+      
       }
     };
     
@@ -63,8 +63,7 @@ const CodeEditor = () => {
       
       try {
         setLoading(true);
-        setError(null);
-        
+     
         const res = await fetch("/api/codes", {
           method: "POST",
           body: JSON.stringify({ prompt }),
@@ -93,7 +92,7 @@ const CodeEditor = () => {
         }
       } catch (err) {
         console.error("Error generating/saving code:", err);
-        setError(err instanceof Error ? err.message : "Failed to generate code");
+      
       } finally {
         setLoading(false);
       }

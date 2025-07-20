@@ -35,8 +35,6 @@ export function AppSidebar() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeWorkspace, setActiveWorkspace] = useState<string | null>(null);
-  const [hoveredWorkspace, setHoveredWorkspace] = useState<string | null>(null);
-  const [isCollapsed, setIsCollapsed] = useState(false);
   
   const router = useRouter();
   const pathname = usePathname();
@@ -79,23 +77,6 @@ export function AppSidebar() {
     router.push(`/chat/${workspaceId}`);
   };
 
-  // Handle workspace actions
-  const handleWorkspaceAction = (action: string, workspaceId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    
-    switch (action) {
-      case 'edit':
-        // Handle edit logic
-        console.log('Edit workspace:', workspaceId);
-        break;
-      case 'delete':
-        // Handle delete logic
-        console.log('Delete workspace:', workspaceId);
-        break;
-    }
-  };
-
-
 
   // Truncate text
   const truncateText = (text: string, maxLength: number = 25) => {
@@ -103,13 +84,13 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className={`bg-zinc-950 text-white transition-all duration-300 ease-in-out ${isCollapsed ? 'w-16' : 'w-64 sm:w-72'} flex flex-col border-r border-gray-800 shadow-2xl`}>
+    <Sidebar className={`bg-zinc-950 text-white transition-all duration-300 ease-in-out w-64 sm:w-72 flex flex-col border-r border-gray-800 shadow-2xl`}>
       
       {/* Enhanced Header */}
       <SidebarHeader className="p-4 border-b  backdrop-blur-sm">
         <div className="flex items-center justify-between">
           <Header />
-          {!isCollapsed && (
+         (
             <button
               onClick={() => router.push('/chat/new')}
               className="p-2 hover:bg-gray-800 rounded-lg transition-colors group"
@@ -117,7 +98,7 @@ export function AppSidebar() {
             >
               <Plus size={16} className="group-hover:rotate-90 transition-transform duration-200" />
             </button>
-          )}
+          )
         </div>
       </SidebarHeader>
 
@@ -129,7 +110,7 @@ export function AppSidebar() {
           <SidebarGroup>
             <SidebarGroupLabel asChild>
               <div className="flex items-center justify-between px-2 py-2 text-xs font-semibold uppercase text-gray-400 hover:text-white transition-colors">
-                {!isCollapsed && (
+                 (
                   <>
                     <span className="flex items-center gap-2">
                       <MessageCircle size={14} />
@@ -139,7 +120,7 @@ export function AppSidebar() {
                       {workspaces.length}
                     </span>
                   </>
-                )}
+                )
               </div>
             </SidebarGroupLabel>
 
@@ -147,7 +128,7 @@ export function AppSidebar() {
             {isLoading && (
               <div className="flex items-center justify-center py-8">
                 <Loader2 size={20} className="animate-spin text-gray-400" />
-                {!isCollapsed && <span className="ml-2 text-sm text-gray-400">Loading chats...</span>}
+                { <span className="ml-2 text-sm text-gray-400">Loading chats...</span>}
               </div>
             )}
 
@@ -155,7 +136,7 @@ export function AppSidebar() {
             {error && (
               <div className="flex items-center justify-center py-8 px-2">
                 <AlertCircle size={20} className="text-red-400" />
-                {!isCollapsed && <span className="ml-2 text-sm text-red-400">{error}</span>}
+                { <span className="ml-2 text-sm text-red-400">{error}</span>}
               </div>
             )}
 
@@ -163,7 +144,7 @@ export function AppSidebar() {
             {!isLoading && !error && workspaces.length === 0 && (
               <div className="flex flex-col items-center justify-center py-8 px-2 text-center">
                 <MessageCircle size={32} className="text-gray-600 mb-2" />
-                {!isCollapsed && (
+                { (
                   <>
                     <p className="text-sm text-gray-400 mb-2">No chats found</p>
                     <button
@@ -187,24 +168,23 @@ export function AppSidebar() {
                       ? 'bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg'
                       : 'hover:bg-gray-800'
                   }`}
-                  onMouseEnter={() => setHoveredWorkspace(ws.id)}
-                  onMouseLeave={() => setHoveredWorkspace(null)}
+                 
                 >
                   <button
                     onClick={() => handleWorkspaceClick(ws.id)}
                     className={`w-full px-3 py-3 text-left transition-all duration-200 rounded-lg ${
-                      isCollapsed ? 'justify-center' : 'justify-start'
+                       'justify-start'
                     } flex items-center gap-3`}
                   >
                     {/* Chat Icon */}
-                    <div className={`flex-shrink-0 ${isCollapsed ? 'mx-auto' : ''}`}>
+                    <div className={`flex-shrink-0 `}>
                       <MessageCircle size={16} className={`${
                         activeWorkspace === ws.id ? 'text-white' : 'text-gray-400'
                       }`} />
                     </div>
 
                     {/* Chat Info */}
-                    {!isCollapsed && (
+                    { (
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <h3 className={`text-sm font-medium truncate ${

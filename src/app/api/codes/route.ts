@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const { prompt } = await req.json();
 
     const result = await generateObject({
-      model: google('gemini-2.5-flash') as any,
+      model: google('gemini-2.5-flash'),
       output: 'no-schema',
       system: CODE_GEN_PROMPT,
       prompt: `${prompt}`

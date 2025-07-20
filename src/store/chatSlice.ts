@@ -6,7 +6,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type ChatState = {
   prompt: string;
   messages: Message[];
-  files: Object;
+  files: object;
 };
 
 const initialState: ChatState = {

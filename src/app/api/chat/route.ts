@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const { prompt }: any = await req.json(); 
 
     const result = await generateText({
-      model: google("gemini-2.5-flash") as any,
+      model: google("gemini-2.5-flash") ,
       system: CHAT_PROMPT,
       prompt: `Summarize the following article in 3-5 sentences: ${prompt}`,
     });

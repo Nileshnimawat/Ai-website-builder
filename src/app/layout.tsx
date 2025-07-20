@@ -37,9 +37,9 @@ export default async function RootLayout({
     await saveUserToDB(user);
   }
   return (
-    
+    <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <ClerkProvider>
+        
          
          
         <body
@@ -75,8 +75,8 @@ export default async function RootLayout({
         </body>
         
        
-           </ClerkProvider>
+          
       </html>
- 
+  </ClerkProvider>
   );
 }

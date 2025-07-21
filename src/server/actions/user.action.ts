@@ -1,47 +1,45 @@
-"use server"
+"use server";
 import { prisma } from "@/lib/prisma";
-import {currentUser, User } from "@clerk/nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 
-export async function saveUserToDB(user: User) {
-  await prisma.user.upsert({
-    where: { clerkId: user.id },
+// Save user on first login
+export async function saveUserToDB(user: {
+  email: string;
+  name: string;
+}) {
+  return prisma.user.upsert({
+    where: { email: user.email },
     update: {
-      email: user.emailAddresses[0].emailAddress,
-      name: user.firstName + " " + user.lastName,
-      phoneNumber: user.phoneNumbers?.[0]?.phoneNumber
-        ? Number(user.phoneNumbers[0].phoneNumber)
-        : null,
+      name: user.name,
+   
     },
     create: {
-      clerkId: user.id,
-      email: user.emailAddresses[0].emailAddress,
-      name: user.firstName + " " + user.lastName,
-      phoneNumber: user.phoneNumbers?.[0]?.phoneNumber
-        ? Number(user.phoneNumbers[0].phoneNumber)
-        : null,
+      email: user.email,
+      name: user.name,
+    
     },
   });
 }
 
 export async function createWorkspace(title: string) {
-  const user = await currentUser();
+  const user = await getCurrentUser();
+  if (!user?.email) throw new Error("Unauthorized");
 
-  if (!user || !user.id) {
-    throw new Error("Unauthorized");
-  }
+  const dbUser = await prisma.user.findUnique({
+    where: { email: user.email },
+  });
+
+  if (!dbUser) throw new Error("User not found");
 
   const workspace = await prisma.workspace.create({
     data: {
-      title: title || "New Chat", // fallback to default if empty
-      user: {
-        connect: { clerkId: user.id },
-      },
+      title: title || "New Chat",
+      userId: dbUser.id,
     },
   });
 
   return workspace.id;
 }
-
 
 export async function saveMessage({
   role,
@@ -52,68 +50,56 @@ export async function saveMessage({
   content: string;
   workspaceId: string;
 }) {
-  try {
-    const message = await prisma.message.create({
-      data: {
-        role,
-        content,
-        workspaceId,
-      },
-    });
-
-    return message;
-  } catch (error) {
-    console.error("❌ Error saving message:", error);
-    throw new Error("Failed to save message");
-  }
+  return prisma.message.create({
+    data: {
+      role,
+      content,
+      workspaceId,
+    },
+  });
 }
 
 export async function getWorkspaceMessages(workspaceId: string) {
-  const user = await currentUser();
-  if (!user || !user.id) {
-    throw new Error("Unauthorized");
-  }
+  const user = await getCurrentUser();
+  if (!user?.email) throw new Error("Unauthorized");
+
+  const dbUser = await prisma.user.findUnique({
+    where: { email: user.email },
+  });
+
+  if (!dbUser) throw new Error("User not found");
 
   const workspace = await prisma.workspace.findFirst({
     where: {
       id: workspaceId,
-      user: { clerkId: user.id }, 
+      userId: dbUser.id,
     },
     include: {
       messages: {
-        orderBy: {
-          createdAt: "asc",
-        },
+        orderBy: { createdAt: "asc" },
       },
     },
   });
 
-  if (!workspace) {
-    throw new Error("Workspace not found or you don't have access");
-  }
+  if (!workspace) throw new Error("Workspace not found");
 
   return workspace.messages;
 }
 
 export async function getUserWorkspaces() {
-  const user = await currentUser();
+  const user = await getCurrentUser();
+  if (!user?.email) throw new Error("Unauthorized");
 
-  if (!user || !user.id) {
-    throw new Error("Unauthorized");
-  }
-
-  const workspaces = await prisma.workspace.findMany({
-    where: {
-      user: {
-        clerkId: user.id,
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
+  const dbUser = await prisma.user.findUnique({
+    where: { email: user.email },
   });
 
-  return workspaces;
+  if (!dbUser) throw new Error("User not found");
+
+  return prisma.workspace.findMany({
+    where: { userId: dbUser.id },
+    orderBy: { createdAt: "desc" },
+  });
 }
 
 // export async function getWorkspaceFiles(workspaceId: string) {

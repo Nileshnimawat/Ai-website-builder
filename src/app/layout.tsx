@@ -2,14 +2,15 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
-import Navbar from "@/components/common/header/Navbar";
-import { ClerkProvider } from "@clerk/nextjs";
-import { saveUserToDB } from "@/server/actions/user.action";
-import { currentUser } from "@clerk/nextjs/server";
+import Navbar from "@/components/common/header/Next-Navbar";
+// import { ClerkProvider } from "@clerk/nextjs";
+// import { saveUserToDB } from "@/server/actions/user.action";
+// import { currentUser } from "@clerk/nextjs/server";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { AppSidebar } from "@/components/common/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ReduxProvider } from "@/store/ReduxProvider";
+import SessionWrapper from "@/lib/SessionWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,13 +32,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await currentUser();
+  // const user = await currentUser();
 
-  if (user) {
-    await saveUserToDB(user);
-  }
+  // if (user) {
+  //   await saveUserToDB(user);
+  // }
   return (
-    <ClerkProvider>
+  
+      <SessionWrapper>
       <html lang="en" suppressHydrationWarning>
         
          
@@ -77,6 +79,7 @@ export default async function RootLayout({
        
           
       </html>
-  </ClerkProvider>
+      </SessionWrapper>
+
   );
 }

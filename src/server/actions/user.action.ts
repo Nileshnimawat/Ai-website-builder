@@ -1,6 +1,6 @@
 "use server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/GetCurrentUser";
 
 // Save user on first login
 export async function saveUserToDB(user: {

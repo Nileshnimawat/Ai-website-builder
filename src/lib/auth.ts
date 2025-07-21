@@ -1,7 +1,26 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+// src/lib/auth.ts
+import { AuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import { saveUserToDB } from "@/server/actions/user.action";
 
-export const getCurrentUser = async () => {
-  const session = await getServerSession(authOptions);
-  return session?.user || null;
+export const authOptions: AuthOptions = {
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+  ],
+  callbacks: {
+    async signIn({ user }) {
+      await saveUserToDB({
+        email: user.email!,
+        name: user.name || "No Name",
+      });
+      return true;
+    },
+    async session({ session }) {
+      return session;
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 };

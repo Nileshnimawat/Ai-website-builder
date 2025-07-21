@@ -24,5 +24,6 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   // You can add logic here (e.g., redirects, headers)
+  console.log(request)
   return NextResponse.next();
 }

@@ -1,4 +1,5 @@
 // app/api/auth/[...nextauth]/route.ts (App Router)
+"use server"
 import NextAuth from "next-auth";
 import { authOptions } from "@/lib/auth";
 

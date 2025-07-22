@@ -148,10 +148,6 @@ const config = {
         "fromEnvVar": null,
         "value": "windows",
         "native": true
-      },
-      {
-        "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -178,8 +174,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"./generated\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"mongodb\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id          String      @id @default(auto()) @map(\"_id\") @db.ObjectId\n  clerkId     String?     @unique\n  phoneNumber Int?\n  email       String      @unique\n  name        String\n  createdAt   DateTime    @default(now())\n  workspaces  Workspace[]\n}\n\nmodel Workspace {\n  id        String    @id @default(auto()) @map(\"_id\") @db.ObjectId\n  title     String\n  createdAt DateTime  @default(now())\n  user      User      @relation(fields: [userId], references: [id])\n  userId    String    @db.ObjectId\n  messages  Message[]\n  files     Json?\n}\n\nmodel Message {\n  id          String    @id @default(auto()) @map(\"_id\") @db.ObjectId\n  role        String // \"user\" or \"assistant\"\n  content     String\n  createdAt   DateTime  @default(now())\n  workspace   Workspace @relation(fields: [workspaceId], references: [id])\n  workspaceId String    @db.ObjectId\n}\n",
-  "inlineSchemaHash": "4723cd6681240874157637489499f6e75cf8d224915215f9603ef61e3a715fe3",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"mongodb\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id          String      @id @default(auto()) @map(\"_id\") @db.ObjectId\n  clerkId     String?     @unique\n  phoneNumber Int?\n  email       String      @unique\n  name        String\n  createdAt   DateTime    @default(now())\n  workspaces  Workspace[]\n}\n\nmodel Workspace {\n  id        String    @id @default(auto()) @map(\"_id\") @db.ObjectId\n  title     String\n  createdAt DateTime  @default(now())\n  user      User      @relation(fields: [userId], references: [id])\n  userId    String    @db.ObjectId\n  messages  Message[]\n  files     Json?\n}\n\nmodel Message {\n  id          String    @id @default(auto()) @map(\"_id\") @db.ObjectId\n  role        String // \"user\" or \"assistant\"\n  content     String\n  createdAt   DateTime  @default(now())\n  workspace   Workspace @relation(fields: [workspaceId], references: [id])\n  workspaceId String    @db.ObjectId\n}\n",
+  "inlineSchemaHash": "faeac3633d73309c49bc097719e5a7de0c36bd3cdc054b793d51a7b02c8f1ab8",
   "copyEngine": true
 }
 config.dirname = '/'

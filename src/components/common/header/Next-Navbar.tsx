@@ -3,13 +3,20 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { usePathname } from "next/navigation";
+import { usePathname} from "next/navigation";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { RocketIcon } from "lucide-react";
 
 const Navbar = () => {
   const pathname = usePathname();
+
   const { data: session, status } = useSession();
+
+  
+
+  const handleSignOut = ()=>{
+    signOut();
+  }
 
   return (
     <nav className="w-full z-50">
@@ -26,7 +33,7 @@ const Navbar = () => {
               >
                 Login
               </Button>
-              <Button
+              <Button 
                 className="border-white light:border-black border-2"
                 onClick={() => signIn()}
               >
@@ -44,7 +51,7 @@ const Navbar = () => {
               </span>
               <Button
                 className="border-white light:border-black border-2"
-                onClick={() => signOut()}
+                onClick={handleSignOut}
               >
                 Logout
               </Button>

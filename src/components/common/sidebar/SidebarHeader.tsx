@@ -30,7 +30,7 @@ const SidebarHeader = () => {
         {/* Left: Logo + New Chat */}
         <div className="flex justify-between gap-2 items-center px-2">
           {/* Replace with actual logo if needed */}
-          <RocketIcon className="w-6 h-6  "/>
+          <RocketIcon onClick={()=>router.push("/")} className="w-6 h-6  "/>
          {/* <SidebarTrigger className="text-white hover:text-gray-300 transition-colors" /> */}
         </div>
 

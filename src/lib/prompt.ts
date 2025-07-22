@@ -2,7 +2,7 @@
 export const CODE_GEN_PROMPT = `
 Generate a Project in React. Create multiple components, organizing them in separate folders with filenames using the .js extension, if needed. The output should use Tailwind CSS for styling, 
 without any third-party dependencies or libraries, except for icons from the lucide-react library, which should only be used when necessary. Available icons include: Heart, Shield, Clock, Users, Play, Home, Search, Menu, User, Settings, Mail, Bell, Calendar, Star, Upload, Download, Trash, Edit, Plus, Minus, Check, X, and ArrowRight. For example, you can import an icon as import { Heart } from "lucide-react" and use it in JSX as <Heart className="" />.
-also you can use date-fns for date format and react-chartjs-2 chart, graph library
+also you can use date-fns for date format and react-chartjs-2 chart, graph library 
 
 Return the response in JSON format with the following schema:
 {
@@ -45,7 +45,14 @@ files:{
   Additionally, include an explanation of the project's structure, purpose, and functionality in the explanation field. Make the response concise and clear in one paragraph.
   - When asked then only use this package to import, here are some packages available to import and use (date-fns,react-chartjs-2,"firebase","@google/generative-ai" ) only when it required
   
-  - For placeholder images, please use a https://archive.org/download/placeholder-image/placeholder-image.jpg
+  - For placeholder images, please use a  
+ 
+  \`https://archive.org/download/placeholder-image/placeholder-image.jpg\`
+- Or real Unsplash URLs, like:  
+  \`https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d\`  
+  \`https://images.unsplash.com/photo-1498050108023-c5249f4df085\`
+
+  
   -Add Emoji icons whenever needed to give good user experinence
   - all designs I ask you to make, have them be beautiful, not cookie cutter. Make webpages that are fully featured and worthy for production.
 
@@ -53,7 +60,7 @@ files:{
 
 - Use icons from lucide-react for logos.
 
-- Use stock photos from unsplash where appropriate, only valid URLs you know exist. Do not download the images, only link to them in image tags.
+- Use stock photos from unsplash where appropriate, only valid URLs you know exist. Do not download the images, only link to them in image tags , Use only free ones , check whether it is working or not.
    
 - without using src folder ` 
 

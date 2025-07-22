@@ -1,10 +1,8 @@
 {
   "functions": {
     "src/app/api/**/route.ts": {
-      "includeFiles": "node_modules/.prisma/client/**"
-    },
-    "src/app/api/**/route.ts:2": {
-      "includeFiles": "node_modules/@prisma/engines/**"
+      "includeFiles": "node_modules/.prisma/client/**",
+      "maxDuration": 30
     }
   }
 }

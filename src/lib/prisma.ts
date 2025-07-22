@@ -1,5 +1,5 @@
 //
-import "@"
+
 import { PrismaClient } from '@prisma/client'  // path to your client
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
